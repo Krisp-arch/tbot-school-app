@@ -1,12 +1,7 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "Dockerfile",
-      "use": "@vercel/docker"
-    }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/" }
-  ]
+  "docker": true,
+  "buildCommand": "docker build -t tbot-site .",
+  "outputDirectory": "path/to/output", <-- optional
+  "devCommand": "docker run --rm -p 3000:3000 tbot-site"
 }
