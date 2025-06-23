@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Add New Course{% endblock %}
+{% block content %}
+<h2>Add New HSC Info / Quiz</h2>
+<p>Paste the full JSON content below. The filename will be created from the <code>id</code> field.</p>
+<hr>
+<form method="POST">
+    <div class="mb-3">
+        <label for="json_content" class="form-label">Course JSON Content</label>
+        <textarea class="form-control" id="json_content" name="json_content" rows="20" required>{{ content or '' }}</textarea>
+        <div class="form-text">
+            Example Format:
+<pre>{
+  "id": "course_id_here",
+  "title": "Course Title",
+  "summary": "Course summary text...",
+  "quiz": [
+    { "question": "Q1?", "options": ["A", "B"], "answer": "A" }
+  ]
+}</pre>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Course</button>
+</form>
+{% endblock %}

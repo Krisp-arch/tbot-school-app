@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Manage Forum{% endblock %}
+{% block content %}
+<h2>Manage Forum</h2>
+<hr>
+<h3>Reported Posts ({{ reported_posts|length }})</h3>
+{% if reported_posts %}
+<div class="list-group mb-4">
+    {% for item in reported_posts %}
+    <div class="list-group-item">
+        <p>"{{ item.post.content }}"</p>
+        <small class="text-muted">By {{ item.post.author }} in topic "{{ item.topic.title }}" | Reports: {{ item.post.reports }}</small>
+        <a href="{{ url_for('delete_post', topic_id=item.topic.id, post_id=item.post.id) }}" class="btn btn-danger btn-sm float-end">Delete Post</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>There are no reported posts.</p>
+{% endif %}
+<h3>All Topics</h3>
+{% for topic in topics %}
+<div class="card {% if topic.is_deleted %}opacity-50{% endif %}">
+    <div class="card-header d-flex justify-content-between align-items-center {% if topic.is_deleted %}bg-secondary{% endif %}">
+        <span>
+            {{ topic.title }} (by {{ topic.author }})
+            {% if topic.is_deleted %}<span class="badge bg-danger ms-2">DELETED</span>{% endif %}
+        </span>
+        <a href="{{ url_for('delete_post', topic_id=topic.id, post_id=topic.id) }}" class="btn btn-danger btn-sm">Delete Topic</a>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ topic.author }}:</strong> {{ topic.content | truncate(100) }}
+                <span class="badge bg-primary ms-2">Likes: {{ topic.likes }}</span>
+                <span class="badge bg-warning text-dark ms-2">Reports: {{ topic.reports }}</span>
+            </div>
+        </li>
+        {% for reply in topic.replies %}
+        <li class="list-group-item d-flex justify-content-between align-items-center {% if reply.is_deleted %}opacity-50 bg-secondary{% endif %}">
+            <div>
+                <strong>{{ reply.author }}:</strong> {{ reply.content | truncate(100) }}
+                <span class="badge bg-primary ms-2">Likes: {{ reply.likes }}</span>
+                <span class="badge bg-warning text-dark ms-2">Reports: {{ reply.reports }}</span>
+                {% if reply.is_deleted %}<span class="badge bg-danger ms-2">DELETED</span>{% endif %}
+            </div>
+            <a href="{{ url_for('delete_post', topic_id=topic.id, post_id=reply.id) }}" class="btn btn-outline-danger btn-sm">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endfor %}
+{% endblock %}

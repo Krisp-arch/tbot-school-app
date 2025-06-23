@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+<p>Welcome, {{ session.name }}. Use this panel to manage the site content and users.</p>
+<hr>
+
+<!-- Stats Row -->
+<div class="row text-center">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">{{ num_users }}</h3>
+                <p class="card-text">Total Users</p>
+                <a href="{{ url_for('manage_users') }}" class="btn btn-primary">Manage Users</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">{{ num_courses }}</h3>
+                <p class="card-text">HSC Courses</p>
+                <a href="{{ url_for('add_course') }}" class="btn btn-primary">Add Course</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">{{ num_resources }}</h3>
+                <p class="card-text">Resource Pages</p>
+                <a href="{{ url_for('manage_resources') }}" class="btn btn-primary">Manage Resources</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

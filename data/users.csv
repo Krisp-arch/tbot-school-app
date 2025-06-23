@@ -1,0 +1,5 @@
+email,password,name,role,status
+laasya.chintala@education.nsw.gov.au,pass123,Laasya Chintala,student,active
+student2@nsg.edu,pass456,Bella Jones,student,active
+laasya.chintala1@education.nsw.gov.au,adminpass,Ms. Laasya C Admin,admin,active
+krismohi@gmail.com,scrypt:32768:8:1$ZbUfoVs4CZiE2Lyf$e813baaa4252b5dd3ff0a23c194982b16b78f3a3afb2da21429eb87718761bd60a620a399f18f3d148d7d949eb91d86aea94ed8dc088d9017646b4ba070e1cf3,Krishna Paladugu,student,active

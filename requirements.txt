@@ -1,0 +1,7 @@
+Flask
+Flask-Login
+google-auth
+google-auth-oauthlib
+python-dotenv
+authlib
+gunicorn

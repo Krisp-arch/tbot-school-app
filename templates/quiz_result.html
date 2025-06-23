@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Quiz Result{% endblock %}
+{% block content %}
+<h2 class="mb-3">Quiz Result for {{ course.title }}</h2>
+
+<div class="alert alert-info fs-4">
+    Your Score: {{ score }} out of {{ total }}
+</div>
+
+<h3>Review Your Answers</h3>
+{% for q in course.quiz %}
+<div class="card">
+    <div class="card-header">
+        Question {{ loop.index }}: {{ q.question }}
+    </div>
+    <div class="card-body">
+        {% set user_ans = user_answers[q.question] %}
+        <p>
+            Your answer: <strong>{{ user_ans if user_ans else 'Not Answered' }}</strong>
+            {% if user_ans == q.answer %}
+                <span class="badge bg-success">Correct</span>
+            {% else %}
+                <span class="badge bg-danger">Incorrect</span>
+            {% endif %}
+        </p>
+        <p class="text-success mb-0">Correct answer: <strong>{{ q.answer }}</strong></p>
+    </div>
+</div>
+{% endfor %}
+
+<a href="{{ url_for('home') }}" class="btn btn-primary mt-3">Back to Home</a>
+{% endblock %}

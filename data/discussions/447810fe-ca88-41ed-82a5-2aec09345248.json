@@ -1,0 +1,22 @@
+{
+    "id": "447810fe-ca88-41ed-82a5-2aec09345248",
+    "title": "Lunch hall location and canteen",
+    "content": "Where is the Lunch hall and what are available in the School Canteen?",
+    "author": "Alice Smith",
+    "author_email": "student1@nsg.edu",
+    "created_at": "2025-06-07T16:17:52.506461",
+    "is_deleted": false,
+    "likes": 0,
+    "reports": 0,
+    "replies": [
+        {
+            "id": "4cfd21d4-8f0a-4717-b6d0-837acd8252f9",
+            "content": "Also , please mention the timings",
+            "author": "Alice Smith",
+            "created_at": "2025-06-07T16:18:30.633225",
+            "is_deleted": false,
+            "likes": 0,
+            "reports": 0
+        }
+    ]
+}

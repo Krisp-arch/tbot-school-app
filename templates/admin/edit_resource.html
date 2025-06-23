@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block title %}Edit Resource{% endblock %}
+{% block content %}
+<h2>Edit: {{ resource.title }}</h2>
+<p>Note: You can use HTML tags (like <p>, <h3>, <ul>, <li>, <strong>) to format the content.</p>
+<hr>
+<form method="POST">
+    <div class="mb-3">
+        <label for="title" class="form-label">Page Title</label>
+        <input type="text" class="form-control" name="title" id="title" value="{{ resource.title }}">
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">Page Content (HTML allowed)</label>
+        <textarea name="content" id="content" class="form-control" rows="15">{{ resource.content }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="{{ url_for('manage_resources') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

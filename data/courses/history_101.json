@@ -1,0 +1,17 @@
+{
+  "id": "history_101",
+  "title": "History 101: Ancient Civilizations",
+  "summary": "This course covers the major ancient civilizations, including Mesopotamia, Egypt, Greece, and Rome. We will explore their culture, politics, and lasting impact on the world.",
+  "quiz": [
+    {
+      "question": "Which civilization developed in the Tigris-Euphrates river valley?",
+      "options": ["Egypt", "Mesopotamia", "Rome", "Greece"],
+      "answer": "Mesopotamia"
+    },
+    {
+      "question": "Who was the first emperor of Rome?",
+      "options": ["Julius Caesar", "Nero", "Augustus", "Constantine"],
+      "answer": "Augustus"
+    }
+  ]
+}

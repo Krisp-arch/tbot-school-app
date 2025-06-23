@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TBot - Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="splash-container">
+        <header class="splash-header">
+            <h1 class="logo">T·bot</h1>
+        </header>
+        <main>
+            <h2 class="tagline">The ultimate tool for<br>transitioning to stage 6</h2>
+            <div class="splash-buttons">
+                <a href="{{ url_for('login') }}" class="btn">Log in and level up</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}{{ resource.title }}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>{{ resource.title }}</h2>
+    </div>
+    <div class="card-body">
+        {{ resource.content|safe }}
+    </div>
+</div>
+<a href="{{ url_for('home') }}" class="btn btn-primary mt-3">Back to Home</a>
+{% endblock %}

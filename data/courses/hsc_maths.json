@@ -1,0 +1,17 @@
+{
+  "id": "hsc_maths",
+  "title": "HSC Maths Advanced - Calculus",
+  "summary": "An introduction to differential calculus, focusing on the derivative as a limit, the rules of differentiation, and its application to curve sketching and optimization problems. This forms a foundational part of the HSC Maths Advanced curriculum.",
+  "quiz": [
+    {
+      "question": "What is the derivative of x^3?",
+      "options": ["3x", "3x^2", "x^2", "3x^3"],
+      "answer": "3x^2"
+    },
+    {
+      "question": "The derivative of a function at a point represents the...",
+      "options": ["Area under the curve", "Maximum value of the function", "Gradient of the tangent to the curve", "Length of the curve"],
+      "answer": "Gradient of the tangent to the curve"
+    }
+  ]
+}

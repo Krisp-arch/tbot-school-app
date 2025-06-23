@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block title %}Discussions{% endblock %}
+{% block content %}
+<h2>Discussion Forum</h2>
+<hr>
+<div class="card mb-4">
+    <div class="card-header">Create a New Topic</div>
+    <div class="card-body">
+        <form action="{{ url_for('add_topic') }}" method="POST">
+            <div class="mb-3"><input type="text" class="form-control" name="title" placeholder="Topic Title" required></div>
+            <div class="mb-3"><textarea class="form-control" name="content" rows="3" placeholder="Your post..." required></textarea></div>
+            <button type="submit" class="btn btn-primary">Post Topic</button>
+        </form>
+    </div>
+</div>
+{% for topic in topics %}
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">{{ topic.title }}</h5><small class="text-muted">Started by: {{ topic.author }}</small></div>
+    <div class="card-body">
+        <div class="border-bottom pb-3 mb-3">
+            <p>{{ topic.content }}</p>
+            <small class="text-muted">
+                <a href="{{ url_for('like_post', topic_id=topic.id, post_id=topic.id) }}">Like ({{ topic.likes }})</a> |
+                <a href="{{ url_for('report_post', topic_id=topic.id, post_id=topic.id) }}" class="text-danger">Report</a>
+            </small>
+        </div>
+        {% for reply in topic.replies %}
+        <div class="ms-4 border-bottom pb-2 mb-2">
+            <p class="mb-1">{{ reply.content }}</p>
+            <small class="text-muted">By: {{ reply.author }} | 
+                <a href="{{ url_for('like_post', topic_id=topic.id, post_id=reply.id) }}">Like ({{ reply.likes }})</a> |
+                <a href="{{ url_for('report_post', topic_id=topic.id, post_id=reply.id) }}" class="text-danger">Report</a>
+            </small>
+        </div>
+        {% endfor %}
+        <form action="{{ url_for('add_reply', topic_id=topic.id) }}" method="POST" class="mt-3 ms-4">
+            <div class="mb-2"><textarea class="form-control" name="content" rows="2" placeholder="Write a reply..." required></textarea></div>
+            <button type="submit" class="btn btn-secondary btn-sm">Post Reply</button>
+        </form>
+    </div>
+</div>
+{% else %}
+<p>No topics have been created yet. Be the first!</p>
+{% endfor %}
+{% endblock %}

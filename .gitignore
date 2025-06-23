@@ -1,0 +1,19 @@
+# Ignore virtual environments
+venv/
+env/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore cache and logs
+__pycache__
+*.pyc
+*.log
+
+# Ignore local data (important!)
+/data/student_marks.csv
+.env
+
+# Optional: if you don't want to upload old backups
+/archive/

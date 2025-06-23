@@ -1,0 +1,17 @@
+{
+  "id": "hsc_english",
+  "title": "HSC English Advanced - Module A",
+  "summary": "This module, 'Textual Conversations', requires students to explore the connections between texts. We will compare William Shakespeare's play, The Tempest, and Margaret Atwood's novel, Hag-Seed, exploring how they comment on imprisonment, revenge, and performance.",
+  "quiz": [
+    {
+      "question": "What is the central theme connecting The Tempest and Hag-Seed?",
+      "options": ["Love and Marriage", "Imprisonment and Revenge", "Sailing and Adventure", "Magic and Sorcery"],
+      "answer": "Imprisonment and Revenge"
+    },
+    {
+      "question": "Who is the protagonist in Margaret Atwood's Hag-Seed?",
+      "options": ["Prospero", "Felix Phillips", "Tony", "Caliban"],
+      "answer": "Felix Phillips"
+    }
+  ]
+}
