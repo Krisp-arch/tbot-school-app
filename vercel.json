@@ -2,6 +2,5 @@
   "version": 2,
   "docker": true,
   "buildCommand": "docker build -t tbot-site .",
-  "outputDirectory": "path/to/output", <-- optional
-  "devCommand": "docker run --rm -p 3000:3000 tbot-site"
+  "devCommand": "docker run --rm -p 3000:8080 tbot-site"
 }
