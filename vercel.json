@@ -1,6 +1,9 @@
 {
-  "version": 2,
-  "docker": true,
-  "buildCommand": "docker build -t tbot-site .",
-  "devCommand": "docker run --rm -p 3000:8080 tbot-site"
+  "version": 4,
+  "builds": [
+    {
+      "src": "Dockerfile",
+      "use": "@vercel/static-docker"
+    }
+  ]
 }
