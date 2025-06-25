@@ -7,7 +7,7 @@ from collections import defaultdict
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from authlib.integrations.flask_client import OAuth
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash ### --- MODIFIED --- ###
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -15,7 +15,16 @@ load_dotenv()
 
 # --- App Configuration ---
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', 'a-very-secret-and-secure-key-for-tbot')
+app.secret_key = os.getenv('SECRET_KEY') ### --- MODIFIED: Use a real secret key --- ###
+
+### --- NEW: Load security variables --- ###
+PASSWORD_PEPPER = os.getenv('PASSWORD_PEPPER')
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
+
+# Critical check to ensure security variables are set
+if not all([app.secret_key, PASSWORD_PEPPER, ADMIN_EMAIL, ADMIN_PASSWORD]):
+    raise ValueError("Missing critical environment variables: SECRET_KEY, PASSWORD_PEPPER, ADMIN_EMAIL, ADMIN_PASSWORD")
 
 # Initialize LoginManager
 login_manager = LoginManager()
@@ -50,10 +59,9 @@ class User(UserMixin):
         users = get_users()
         user_data = next((u for u in users if u['email'] == user_id), None)
         if user_data:
-            # Check if user is active
             if user_data.get('status', 'active') == 'inactive':
                 return None
-            return User(id=user_data['email'], email=user_data['email'], 
+            return User(id=user_data['email'], email=user_data['email'],
                        name=user_data.get('name', ''), role=user_data.get('role', 'student'),
                        status=user_data.get('status', 'active'))
         return None
@@ -70,20 +78,46 @@ COURSES_DIR = os.path.join(DATA_DIR, 'courses')
 RESOURCES_DIR = os.path.join(DATA_DIR, 'resources')
 USER_FIELDNAMES = ['email', 'password', 'name', 'role', 'status']
 
-# --- Helper Functions for Data Handling ---
+# --- Helper Functions for Data and Security --- ### --- MODIFIED SECTION --- ###
+
+def hash_password(password):
+    """Hashes a password with the application's pepper."""
+    return generate_password_hash(password + PASSWORD_PEPPER)
+
+def check_password(hashed_password, provided_password):
+    """Checks a provided password against a hash, using the application's pepper."""
+    return check_password_hash(hashed_password, provided_password + PASSWORD_PEPPER)
 
 def get_users():
-    if not os.path.exists(USERS_FILE): return []
-    with open(USERS_FILE, mode='r', newline='') as f:
-        return list(csv.DictReader(f))
+    """Reads users from CSV and injects the environment-defined admin user."""
+    users = []
+    if os.path.exists(USERS_FILE):
+        with open(USERS_FILE, mode='r', newline='') as f:
+            users = list(csv.DictReader(f))
+    
+    # Inject the admin user from environment variables. This user cannot be edited in the UI.
+    admin_user = {
+        'email': ADMIN_EMAIL,
+        'password': hash_password(ADMIN_PASSWORD), # Store it hashed in memory for consistency
+        'name': 'System Admin',
+        'role': 'admin',
+        'status': 'active'
+    }
+    # Ensure admin is not duplicated if their email somehow ended up in the CSV
+    users = [u for u in users if u['email'] != ADMIN_EMAIL]
+    users.insert(0, admin_user)
+    return users
 
 def save_users(users):
+    """Saves users to CSV, filtering out the environment-defined admin user."""
+    # Never write the environment admin user to the CSV file
+    users_to_save = [u for u in users if u['email'] != ADMIN_EMAIL]
     with open(USERS_FILE, mode='w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=USER_FIELDNAMES)
         writer.writeheader()
-        writer.writerows(users)
+        writer.writerows(users_to_save)
 
-# ... (rest of helper functions for courses, marks, resources) ...
+# ... (rest of helper functions for courses, marks, resources are unchanged) ...
 def get_courses():
     courses = []
     if not os.path.exists(COURSES_DIR): return []
@@ -171,10 +205,10 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         users = get_users()
-        user_data = next((u for u in users if u['email'] == email and u['password'] == password), None)
+        user_data = next((u for u in users if u['email'] == email), None)
         
-        if user_data:
-            # Check if the user is active before logging in
+        ### --- MODIFIED: Use hashed password check --- ###
+        if user_data and check_password(user_data['password'], password):
             if user_data.get('status') == 'inactive':
                 flash('Your account has been deactivated. Please contact an administrator.', 'warning')
                 return redirect(url_for('login'))
@@ -189,6 +223,7 @@ def login():
         
         flash('Invalid email or password', 'error')
     return render_template('login.html')
+
 
 @app.route('/login/google')
 def google_login():
@@ -205,12 +240,13 @@ def authorize():
     user_data = next((u for u in users if u['email'] == user_info['email']), None)
     
     if not user_data:
+        # For Google sign-ups, generate a long random password as it won't be used for direct login
         new_user = {
             'email': user_info['email'],
-            'password': generate_password_hash(str(uuid.uuid4())),
+            'password': hash_password(str(uuid.uuid4())), ### --- MODIFIED --- ###
             'name': user_info.get('name', user_info['email'].split('@')[0]),
             'role': 'student',
-            'status': 'active' # New users are active by default
+            'status': 'active'
         }
         users.append(new_user)
         save_users(users)
@@ -237,6 +273,7 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
+# ... (Home, resource, course, quiz, toppers routes are unchanged) ...
 @app.route('/home')
 @login_required
 def home():
@@ -246,7 +283,6 @@ def home():
     resources = get_resources()
     return render_template('home.html', hsc_info=get_courses(), marks=user_marks, resources=resources)
 
-# ... (other main routes: resource_page, course_page, submit_quiz, toppers) ...
 @app.route('/resource/<slug>')
 @login_required
 def resource_page(slug):
@@ -306,60 +342,76 @@ def toppers():
     topper_list.sort(key=lambda x: x['average_score'], reverse=True)
     return render_template('toppers.html', toppers=topper_list)
 
+
 # --- Admin Routes ---
 @app.route('/admin/dashboard')
 @admin_required
 def admin_dashboard():
-    num_users = len(get_users())
+    # Subtract 1 to not count the virtual admin user in the stats
+    num_users = len(get_users()) - 1 
     num_courses = len(get_courses())
     num_resources = len(get_resources())
     return render_template('admin/dashboard.html', 
                            num_users=num_users, num_courses=num_courses, num_resources=num_resources)
 
-# MODIFIED: User management now cleaner and more powerful
 @app.route('/admin/manage_users', methods=['GET', 'POST'])
 @admin_required
 def manage_users():
     if request.method == 'POST':
         email = request.form.get('email')
+        password = request.form.get('password')
         users = get_users()
-        # Check for unique email before adding
+        
+        if not password:
+            flash("Password is required for new users.", "danger")
+            return redirect(url_for('manage_users'))
+            
         if any(u['email'] == email for u in users):
             flash(f"User with email {email} already exists.", "danger")
         else:
             new_user = {
                 'email': email,
-                'password': request.form['password'],
+                'password': hash_password(password), ### --- MODIFIED --- ###
                 'name': request.form['name'],
                 'role': request.form['role'],
                 'status': 'active'
             }
-            users.append(new_user)
-            save_users(users)
+            # The get_users() list already includes the admin, so we need to save without it.
+            # save_users() handles this filtering automatically.
+            csv_users = [u for u in users if u['email'] != ADMIN_EMAIL]
+            csv_users.append(new_user)
+            save_users(csv_users)
             flash(f"User {request.form['name']} added successfully.", "success")
         return redirect(url_for('manage_users'))
 
-    users = get_users()
-    return render_template('admin/manage_users.html', users=users)
+    # Filter out the system admin so they cannot be edited from the UI
+    display_users = [u for u in get_users() if u['email'] != ADMIN_EMAIL]
+    return render_template('admin/manage_users.html', users=display_users)
 
-# NEW: Route to edit a user
+
 @app.route('/admin/edit_user/<user_email>', methods=['GET', 'POST'])
 @admin_required
 def edit_user(user_email):
+    # Prevent editing the system admin via URL manipulation
+    if user_email == ADMIN_EMAIL:
+        flash("The system admin user cannot be edited from the UI.", "danger")
+        return redirect(url_for('manage_users'))
+        
     users = get_users()
-    user_to_edit = next((u for u in users if u['email'] == user_email), None)
+    user_to_edit_list = [u for u in users if u['email'] == user_email]
 
-    if not user_to_edit:
+    if not user_to_edit_list:
         flash("User not found.", "danger")
         return redirect(url_for('manage_users'))
+    
+    user_to_edit = user_to_edit_list[0]
 
     if request.method == 'POST':
         user_to_edit['name'] = request.form['name']
         user_to_edit['role'] = request.form['role']
-        # Optionally reset password
         new_password = request.form.get('password')
         if new_password:
-            user_to_edit['password'] = new_password
+            user_to_edit['password'] = hash_password(new_password) ### --- MODIFIED --- ###
         
         save_users(users)
         flash(f"User {user_to_edit['name']}'s details updated.", "success")
@@ -367,15 +419,20 @@ def edit_user(user_email):
 
     return render_template('admin/edit_user.html', user=user_to_edit)
 
-# NEW: Route to toggle user status (activate/inactivate)
+
 @app.route('/admin/toggle_user_status/<user_email>')
 @admin_required
 def toggle_user_status(user_email):
+    # Prevent deactivating the system admin
+    if user_email == ADMIN_EMAIL:
+        flash("The system admin user cannot be deactivated.", "danger")
+        return redirect(url_for('manage_users'))
+
     users = get_users()
     user_to_toggle = next((u for u in users if u['email'] == user_email), None)
 
     if user_to_toggle:
-        # Prevent admin from deactivating themselves
+        # Prevent admin from deactivating themselves (redundant check, but good practice)
         if user_to_toggle['email'] == current_user.email:
              flash("You cannot change your own status.", "danger")
         else:
@@ -387,7 +444,7 @@ def toggle_user_status(user_email):
     
     return redirect(url_for('manage_users'))
 
-# ... (other admin routes: resources, add_course) ...
+# ... (other admin routes: resources, add_course are unchanged) ...
 @app.route('/admin/resources')
 @admin_required
 def manage_resources():
@@ -434,6 +491,7 @@ def add_course():
             flash("Invalid JSON or missing 'id' field.", "danger")
             return render_template('admin/add_course.html', content=request.form['json_content'])
     return render_template('admin/add_course.html')
+
 
 # --- Run the App ---
 if __name__ == '__main__':
