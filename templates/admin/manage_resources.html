@@ -9,7 +9,7 @@
     {% for resource in resources %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
             {{ resource.title }}
-            <a href="{{ url_for('edit_resource', slug=resource.slug) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <a href="{{ url_for('edit_resource', resource_id=resource.id) }}" class="btn btn-secondary btn-sm">Edit</a>
         </li>
     {% else %}
         <li class="list-group-item">No resource pages have been created.</li>
