@@ -83,8 +83,15 @@ def load_user(user_id):
     return User.query.filter_by(email=user_id, status='active').first()
 
 oauth = OAuth(app)
-google = oauth.register(...) # Your previous Google OAuth setup
-
+google = oauth.register(
+    name='google',
+    client_id=os.getenv('GOOGLE_CLIENT_ID'),
+    client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={
+        'scope': 'openid email profile'
+    }
+)
 # --- Helper Functions ---
 def hash_password(password): return generate_password_hash(password + PASSWORD_PEPPER)
 def check_password(hashed, plain): return check_password_hash(hashed, plain + PASSWORD_PEPPER)
@@ -138,6 +145,50 @@ def logout():
     logout_user()
     session.clear()
     return redirect(url_for('index'))
+
+# --- ADD THESE TWO NEW ROUTES ---
+
+@app.route('/login/google')
+def google_login():
+    """Redirects to Google's authorization page."""
+    # The URL Google will redirect back to after login
+    redirect_uri = url_for('authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route('/authorize')
+def authorize():
+    """Callback function for Google OAuth."""
+    token = google.authorize_access_token()
+    # The user's info is in the 'userinfo' part of the token
+    user_info = token.get('userinfo')
+    if not user_info:
+        flash("Authentication failed.", "danger")
+        return redirect(url_for('login'))
+
+    user_email = user_info['email']
+    user_name = user_info['name']
+
+    # Find user in our database
+    user = User.query.filter_by(email=user_email).first()
+
+    # If user doesn't exist, create a new one
+    if not user:
+        user = User(
+            email=user_email,
+            name=user_name,
+            role='student', # New users default to 'student'
+            status='active'
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash("Welcome! Your account has been created.", "success")
+    
+    # Log the user in
+    login_user(user)
+    session.update(role=user.role, name=user.name, email=user.email)
+    return redirect(url_for('home'))
+
+# --- END OF NEW ROUTES ---
 
 @app.route('/home')
 @login_required
