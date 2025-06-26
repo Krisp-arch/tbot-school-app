@@ -10,7 +10,7 @@
 <hr>
 
 <h4>Quiz</h4>
-<form action="{{ url_for('submit_quiz', course_id=course.id) }}" method="POST">
+<form action="{{ url_for('submit_quiz', course_id_str=course.id) }}" method="POST">
     
     <!-- Outer loop for each question -->
     {% for q in course.quiz %}
