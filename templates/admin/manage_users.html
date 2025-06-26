@@ -67,7 +67,7 @@
                     <td class="align-middle">{{ user.email }}</td>
                     <td class="align-middle">{{ user.role|title }}</td>
                     <td class="align-middle">
-                        {% if user.get('status', 'active') == 'active' %}
+                        {% if user.status == 'active' %}
                             <span class="badge bg-success">Active</span>
                         {% else %}
                             <span class="badge bg-secondary">Inactive</span>
