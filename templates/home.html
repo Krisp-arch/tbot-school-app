@@ -24,12 +24,12 @@
             <h3>HSC Information & Quizzes</h3>
             {% if hsc_info %}
                 <div class="list-group">
-                    {% for info in hsc_info %}
-                        <a href="{{ url_for('course_page', course_id_str=info.id) }}" class="list-group-item list-group-item-action">
-                            {{ info.title }}
-                        </a>
-                    {% endfor %}
-                </div>
+					{% for course in courses %}
+					<a href="{{ url_for('course_page', course_id_str=course.course_id_str) }}" class="list-group-item list-group-item-action">
+						{{ course.title }}
+					</a>
+					{% endfor %}
+				</div>
             {% else %}
                 <p>No HSC information has been added yet.</p>
             {% endif %}

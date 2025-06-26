@@ -197,7 +197,8 @@ def home():
     user_marks = Mark.query.filter_by(user_email=current_user.email).all()
     all_courses = Course.query.order_by(Course.title).all()
     all_resources = Resource.query.order_by(Resource.title).all()
-    return render_template('home.html', hsc_info=[c.content for c in all_courses], marks=user_marks, resources=all_resources)
+    # CHANGE IS HERE: Pass the course objects directly
+    return render_template('home.html', courses=all_courses, marks=user_marks, resources=all_resources)
 
 @app.route('/resource/<slug>')
 @login_required
