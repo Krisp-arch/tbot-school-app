@@ -39,7 +39,7 @@
                         <!-- MODIFIED LINE TO INCLUDE THE ICON -->
                         <span class="badge-styled {{ topper.badge_class }}">{{ topper.badge_icon }} {{ topper.badge_name }}</span>
                     </td>
-                    <td class="align-middle">{{ topper.average_score }}%</td>
+                    <td class="align-middle">{{ "%.1f"|format(topper.average_score) }}%</td>
                 </tr>
                 {% endfor %}
             </tbody>

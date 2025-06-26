@@ -229,8 +229,19 @@ def submit_quiz(course_id_str):
 def toppers():
     scores_q = db.session.query(Mark.user_email, func.sum(Mark.score).label('ts'), func.sum(Mark.total).label('tp')).group_by(Mark.user_email).subquery()
     toppers_data = db.session.query(User.name, scores_q.c.ts, scores_q.c.tp).join(scores_q, User.email == scores_q.c.user_email).all()
-    topper_list = [{'name': n, 'avg': (ts/tp)*100, 'badge': get_badge((ts/tp)*100)} for n, ts, tp in toppers_data if tp > 0]
-    topper_list.sort(key=lambda x: x['avg'], reverse=True)
+    topper_list = []
+    for name, total_score, total_possible in toppers_data:
+        if total_possible > 0:
+            avg_score = (total_score / total_possible) * 100
+            badge_name, badge_class, badge_icon = get_badge(avg_score)
+            topper_list.append({
+                'name': name,
+                'average_score': avg_score,
+                'badge_name': badge_name,
+                'badge_class': badge_class,
+                'badge_icon': badge_icon
+                            })
+        topper_list.sort(key=lambda x: x['avg'], reverse=True)
     return render_template('toppers.html', toppers=topper_list)
 
 # --- Admin Routes ---
