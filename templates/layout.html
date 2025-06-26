@@ -23,7 +23,7 @@
                 <hr style="background-color: white;">
                 <li><a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if 'admin' in request.path }}">Admin Dashboard</a></li>
                 <li><a href="{{ url_for('manage_users') }}">Manage Users</a></li>
-                <li><a href="{{ url_for('add_course') }}">Add HSC Info</a></li>
+                <li><a href="{{ url_for('manage_courses') }}" class="nav-link ...">Manage Courses</a></li>
                 <li><a href="{{ url_for('manage_resources') }}">Manage Resources</a></li>
                 {% endif %}
             </ul>

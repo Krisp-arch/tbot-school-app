@@ -332,6 +332,47 @@ def edit_resource(resource_id):
     return render_template('admin/edit_resource.html', resource=resource)
 
 # --- Course Management ---
+@app.route('/admin/courses')
+@admin_required
+def manage_courses():
+    courses = Course.query.order_by(Course.title).all()
+    return render_template('admin/manage_courses.html', courses=courses)
+
+
+@app.route('/admin/courses/edit/<int:course_id>', methods=['GET', 'POST'])
+@admin_required
+def edit_course(course_id):
+    course = Course.query.get_or_404(course_id)
+    if request.method == 'POST':
+        try:
+            content = json.loads(request.form['json_content'])
+            course.course_id_str = content['id']
+            course.title = content.get('title', 'Untitled')
+            course.content = content
+            db.session.commit()
+            flash(f"Course '{course.title}' updated successfully.", "success")
+            return redirect(url_for('manage_courses'))
+        except (json.JSONDecodeError, KeyError) as e:
+            flash(f"Invalid JSON or missing 'id' field. Error: {e}", "danger")
+        except IntegrityError:
+            db.session.rollback()
+            flash(f"A course with ID '{content['id']}' already exists.", "danger")
+    
+    # For the GET request, show the pretty-printed JSON
+    pretty_json = json.dumps(course.content, indent=4)
+    return render_template('admin/edit_course.html', course=course, content=pretty_json)
+
+@app.route('/admin/courses/delete/<int:course_id>')
+@admin_required
+def delete_course(course_id):
+    course = Course.query.get_or_404(course_id)
+    db.session.delete(course)
+    db.session.commit()
+    flash(f"Course '{course.title}' has been deleted.", "success")
+    return redirect(url_for('manage_courses'))
+    
+    
+    
 @app.route('/admin/add_course', methods=['GET', 'POST'])
 @admin_required
 def add_course():

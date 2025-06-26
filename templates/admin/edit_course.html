@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Edit Course{% endblock %}
+{% block content %}
+<h1>Edit Course: {{ course.title }}</h1>
+<p>Modify the JSON content below. The <code>id</code> and <code>title</code> fields will be updated automatically on save.</p>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="json_content" class="form-label">Course JSON Content</label>
+        <textarea class="form-control" id="json_content" name="json_content" rows="20">{{ content }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="{{ url_for('manage_courses') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
