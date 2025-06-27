@@ -1,26 +1,13 @@
 {% extends "layout.html" %}
 {% block title %}{{ course.title }}{% endblock %}
+
 {% block content %}
 <h2>{{ course.title }}</h2>
 <hr>
 
 <h4>Course Summary</h4>
-<p>{{ course.summary }}</p>
-
-<hr>
-
-<h4>Quiz</h4>
-<form action="{{ url_for('submit_quiz', course_id_str=course.id) }}" method="POST">
-    
-    <!-- Outer loop for each question -->
-{% extends "layout.html" %}
-{% block title %}{{ course.title }}{% endblock %}
-{% block content %}
-<h2>{{ course.title }}</h2>
-<hr>
-
-<h4>Course Summary</h4>
-<p>{{ course.summary }}</p>
+<!-- FIX 2: Using course.content and the |safe filter to render HTML -->
+<div>{{ course.content | safe }}</div>
 
 <hr>
 
@@ -29,19 +16,24 @@
     
     <!-- Outer loop for each question -->
     {% for q in course.quiz %}
-    <div class="card">
+    <div class="card mb-3">
         <div class="card-body">
             <p class="card-text"><strong>Question {{ loop.index }}: {{ q.question }}</strong></p>
             
-            <!-- We define the name for this question's radio group here, in the outer loop's scope. -->
-            {% set question_name = "question_" ~ loop.index0 %}
-
             <!-- Inner loop for the options of the current question -->
             {% for option in q.options %}
             <div class="form-check">
-                <!-- Now we use the correctly scoped variable 'question_name' for the name attribute -->
-                <input class="form-check-input" type="radio" name="{{ question_name }}" id="{{ question_name }}_{{ loop.index0 }}" value="{{ option }}">
-                <label class="form-check-label" for="{{ question_name }}_{{ loop.index0 }}">{{ option }}</label>
+                <!-- FIX 3: Using q.id to create the name attribute to match app.py -->
+                <input class="form-check-input" 
+                       type="radio" 
+                       name="question_{{ q.id }}" 
+                       id="q{{ q.id }}_option{{ loop.index0 }}" 
+                       value="{{ option }}"
+                       required> <!-- Added required to ensure an option is selected -->
+
+                <label class="form-check-label" for="q{{ q.id }}_option{{ loop.index0 }}">
+                    {{ option }}
+                </label>
             </div>
             {% endfor %}
 
@@ -51,8 +43,4 @@
 
     <button type="submit" class="btn btn-success">Submit Quiz</button>
 </form>
-{% endblock %}
-
-    <button type="submit" class="btn btn-success">Submit Quiz</button>
-</form>
-{% endblock %}
+{% endblock %} <!-- FIX 1: Only ONE endblock at the very end of the content -->
