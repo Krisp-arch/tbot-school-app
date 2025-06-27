@@ -208,9 +208,10 @@ a.list-group-item:hover { background-color: #4b5563; }
         border-bottom: 1px solid var(--border-color);
     }
     .main-content {
-        margin-left: 0; /* Remove the space left for the sidebar */
-        width: 100%;
-    }
+    flex-grow: 1; 
+    min-width: 0;
+    overflow-x: auto; /* Add this line */
+	}
     .app-container {
         flex-direction: column; /* Stack sidebar on top of content */
     }
