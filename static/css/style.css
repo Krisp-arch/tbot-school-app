@@ -105,7 +105,12 @@ body {
     margin-right: 1rem;
 }
 .sidebar-title { color: white; font-size: 1.5rem; font-weight: 500; }
-.sidebar-nav { list-style: none; padding: 0; flex-grow: 1; }
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    flex-grow: 1; /* This is important, it makes the nav fill the space */
+    overflow-y: auto; /* This is the fix, it makes the nav scrollable */
+}
 .sidebar-nav li a {
     display: block;
     color: var(--text-muted);
