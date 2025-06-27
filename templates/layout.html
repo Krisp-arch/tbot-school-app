@@ -50,7 +50,7 @@
         </div>
 
         <!-- Main Content -->
-        <main class="main-content flex-grow-1 p-4">
+        <main class="main-content flex-grow-1 p-4" style="min-width: 0;">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}

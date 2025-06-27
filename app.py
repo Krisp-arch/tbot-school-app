@@ -228,8 +228,31 @@ def submit_quiz(course_id_str):
 @app.route('/toppers')
 @login_required
 def toppers():
-    scores_q = db.session.query(Mark.user_email, func.sum(Mark.score).label('ts'), func.sum(Mark.total).label('tp')).group_by(Mark.user_email).subquery()
-    toppers_data = db.session.query(User.name, scores_q.c.ts, scores_q.c.tp).join(scores_q, User.email == scores_q.c.user_email).all()
+    # Step 1: Find the highest score for each user on each unique course quiz.
+    # This subquery gives us rows like (user_email, course_id_str, max_score, total_for_that_quiz)
+    highest_scores_per_quiz = db.session.query(
+        Mark.user_email,
+        Mark.course_id_str,
+        func.max(Mark.score).label('max_score'),
+        Mark.total.label('total')
+    ).group_by(Mark.user_email, Mark.course_id_str, Mark.total).subquery()
+
+    # Step 2: Sum up these highest scores and totals for each user.
+    # This gives us the final aggregate totals we need.
+    scores_q = db.session.query(
+        highest_scores_per_quiz.c.user_email,
+        func.sum(highest_scores_per_quiz.c.max_score).label('ts'),
+        func.sum(highest_scores_per_quiz.c.total).label('tp')
+    ).group_by(highest_scores_per_quiz.c.user_email).subquery()
+
+    # Step 3: Join with the User table to get names (this part stays the same).
+    toppers_data = db.session.query(
+        User.name,
+        scores_q.c.ts,
+        scores_q.c.tp
+    ).join(scores_q, User.email == scores_q.c.user_email).all()
+
+    # Step 4: Process the data for the template (this part stays the same).
     topper_list = []
     for name, total_score, total_possible in toppers_data:
         if total_possible > 0:
@@ -241,8 +264,8 @@ def toppers():
                 'badge_name': badge_name,
                 'badge_class': badge_class,
                 'badge_icon': badge_icon
-                            })
-        topper_list.sort(key=lambda x: x['average_score'], reverse=True)
+            })
+    topper_list.sort(key=lambda x: x['average_score'], reverse=True)
     return render_template('toppers.html', toppers=topper_list)
 
 # --- Admin Routes ---
