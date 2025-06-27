@@ -19,13 +19,34 @@
 }
 
 /* --- Base Styles --- */
+
 body {
     background-color: var(--dark-bg);
-    color: var(--text-light);
     font-family: var(--main-font);
     font-weight: 300;
-    line-height: 1.6; /* Improved readability */
+    line-height: 1.6;
     margin: 0;
+    /* Make the default text color apply more broadly */
+    color: var(--text-light) !important; 
+}
+
+/* Universal selector to ensure all elements inherit the body color */
+* {
+    color: inherit;
+}
+
+/* Specific fixes for headings and links to ensure they are bright */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff; /* Make headings pure white for emphasis */
+}
+
+a {
+    /* Ensure links are also bright, using your primary color */
+    color: var(--primary-indigo);
+    text-decoration: none; /* Optional: remove underline from links */
+}
+a:hover {
+    color: var(--primary-indigo-hover);
 }
 
 /* --- Splash/Login Page (Minor Tweaks) --- */
