@@ -4,11 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}T-Bot School App{% endblock %}</title>
-    <!-- The link to your beautiful custom CSS file -->
+    <!-- Link to your custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-
     <div class="app-container">
         <!-- Sidebar -->
         <aside class="sidebar">
@@ -20,27 +19,15 @@
             </div>
             
             <ul class="sidebar-nav">
-                <li>
-                    <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a>
-                </li>
-                <li>
-                    <a href="{{ url_for('toppers') }}" class="{% if request.endpoint == 'toppers' %}active{% endif %}">Toppers</a>
-                </li>
+                <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>
+                <li><a href="{{ url_for('toppers') }}" class="{% if request.endpoint == 'toppers' %}active{% endif %}">Toppers</a></li>
                 
                 {% if current_user.is_authenticated and current_user.role == 'admin' %}
                 <hr class="my-3" style="border-color: var(--border-color);">
-                <li>
-                    <a href="{{ url_for('admin_dashboard') }}" class="{% if 'admin_dashboard' in request.endpoint %}active{% endif %}">Admin Dashboard</a>
-                </li>
-                <li>
-                    <a href="{{ url_for('manage_users') }}" class="{% if 'user' in request.endpoint and 'admin' in request.endpoint %}active{% endif %}">Manage Users</a>
-                </li>
-                <li>
-                    <a href="{{ url_for('manage_courses') }}" class="{% if 'course' in request.endpoint and 'admin' in request.endpoint %}active{% endif %}">Manage Courses</a>
-                </li>
-                <li>
-                    <a href="{{ url_for('manage_resources') }}" class="{% if 'resource' in request.endpoint and 'admin' in request.endpoint %}active{% endif %}">Manage Resources</a>
-                </li>
+                <li><a href="{{ url_for('admin_dashboard') }}" class="{% if 'admin_dashboard' in request.endpoint %}active{% endif %}">Admin Dashboard</a></li>
+                <li><a href="{{ url_for('manage_users') }}" class="{% if 'user' in request.endpoint and 'admin' in request.endpoint %}active{% endif %}">Manage Users</a></li>
+                <li><a href="{{ url_for('manage_courses') }}" class="{% if 'course' in request.endpoint and 'admin' in request.endpoint %}active{% endif %}">Manage Courses</a></li>
+                <li><a href="{{ url_for('manage_resources') }}" class="{% if 'resource' in request.endpoint and 'admin' in request.endpoint %}active{% endif %}">Manage Resources</a></li>
                 {% endif %}
             </ul>
 
@@ -60,9 +47,8 @@
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="alert alert-{{ category or 'info' }} alert-dismissible fade show" role="alert">
+                        <div class="alert alert-{{ category or 'info' }}">
                             {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% endfor %}
                 {% endif %}
@@ -72,7 +58,7 @@
         </main>
     </div>
 
-    <!-- Bootstrap JS for things like alerts closing -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- We don't need Bootstrap JS for this custom theme, but keep it for future use if needed -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
 </body>
 </html>
