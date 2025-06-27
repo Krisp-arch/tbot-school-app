@@ -216,7 +216,7 @@ def course_page(course_id_str):
 @login_required
 def submit_quiz(course_id_str):
     course = Course.query.filter_by(course_id_str=course_id_str).first_or_404().content
-    score = sum(1 for q in course['quiz'] if request.form.get(f'question_{q["id"]}') == q['answer'])
+    score = sum(1 for q in course['quiz'] if request.form.get(f'question_{q["id"]}') == str(q['answer']))
     total = len(course['quiz'])
     new_mark = Mark(user_email=current_user.email, course_id_str=course_id_str, score=score, total=total)
     db.session.add(new_mark)
@@ -242,7 +242,7 @@ def toppers():
                 'badge_class': badge_class,
                 'badge_icon': badge_icon
                             })
-        topper_list.sort(key=lambda x: x['avg'], reverse=True)
+        topper_list.sort(key=lambda x: x['average_score'], reverse=True)
     return render_template('toppers.html', toppers=topper_list)
 
 # --- Admin Routes ---

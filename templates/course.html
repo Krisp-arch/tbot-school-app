@@ -13,6 +13,21 @@
 <form action="{{ url_for('submit_quiz', course_id_str=course.id) }}" method="POST">
     
     <!-- Outer loop for each question -->
+{% extends "layout.html" %}
+{% block title %}{{ course.title }}{% endblock %}
+{% block content %}
+<h2>{{ course.title }}</h2>
+<hr>
+
+<h4>Course Summary</h4>
+<p>{{ course.summary }}</p>
+
+<hr>
+
+<h4>Quiz</h4>
+<form action="{{ url_for('submit_quiz', course_id_str=course.id) }}" method="POST">
+    
+    <!-- Outer loop for each question -->
     {% for q in course.quiz %}
     <div class="card">
         <div class="card-body">
@@ -33,6 +48,10 @@
         </div>
     </div>
     {% endfor %}
+
+    <button type="submit" class="btn btn-success">Submit Quiz</button>
+</form>
+{% endblock %}
 
     <button type="submit" class="btn btn-success">Submit Quiz</button>
 </form>
