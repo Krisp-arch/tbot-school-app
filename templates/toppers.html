@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
-{% block title %}TBot - Top Performers{% endblock %}
+{% block title %}Top Performers{% endblock %}
+
 {% block content %}
 <h1 class="mb-4">Top Performers</h1>
 
@@ -36,7 +37,6 @@
                     </th>
                     <td class="align-middle">{{ topper.name }}</td>
                     <td class="align-middle">
-                        <!-- MODIFIED LINE TO INCLUDE THE ICON -->
                         <span class="badge-styled {{ topper.badge_class }}">{{ topper.badge_icon }} {{ topper.badge_name }}</span>
                     </td>
                     <td class="align-middle">{{ "%.1f"|format(topper.average_score) }}%</td>

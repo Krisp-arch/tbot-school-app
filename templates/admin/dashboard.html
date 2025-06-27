@@ -1,35 +1,34 @@
 {% extends "layout.html" %}
 {% block title %}Admin Dashboard{% endblock %}
-{% block content %}
-<h2>Admin Dashboard</h2>
-<p>Welcome, {{ session.name }}. Use this panel to manage the site content and users.</p>
-<hr>
 
-<!-- Stats Row -->
-<div class="row text-center">
+{% block content %}
+<h1 class="mb-3">Admin Dashboard</h1>
+<p class="lead text-muted mb-4">Welcome, System Admin. Use this panel to manage the site content and users.</p>
+
+<div class="row">
     <div class="col-md-4">
-        <div class="card">
+        <div class="card text-center">
             <div class="card-body">
-                <h3 class="card-title">{{ num_users }}</h3>
-                <p class="card-text">Total Users</p>
+                <h2 class="display-5">{{ num_users }}</h2>
+                <p class="card-text text-muted">Total Users</p>
                 <a href="{{ url_for('manage_users') }}" class="btn btn-primary">Manage Users</a>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card">
+        <div class="card text-center">
             <div class="card-body">
-                <h3 class="card-title">{{ num_courses }}</h3>
-                <p class="card-text">HSC Courses</p>
-                <a href="{{ url_for('add_course') }}" class="btn btn-primary">Add Course</a>
+                <h2 class="display-5">{{ num_courses }}</h2>
+                <p class="card-text text-muted">HSC Courses</p>
+                <a href="{{ url_for('manage_courses') }}" class="btn btn-primary">Manage Courses</a>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card">
+        <div class="card text-center">
             <div class="card-body">
-                <h3 class="card-title">{{ num_resources }}</h3>
-                <p class="card-text">Resource Pages</p>
+                <h2 class="display-5">{{ num_resources }}</h2>
+                <p class="card-text text-muted">Resource Pages</p>
                 <a href="{{ url_for('manage_resources') }}" class="btn btn-primary">Manage Resources</a>
             </div>
         </div>

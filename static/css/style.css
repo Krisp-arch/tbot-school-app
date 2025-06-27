@@ -223,3 +223,42 @@ a.list-group-item:hover { background-color: #4b5563; }
         width: auto;
     }
 }
+
+/* --- Additions to style.css for missing button/alert styles --- */
+
+/* Button Styles */
+.btn-secondary {
+    background-color: #6b7280; /* A neutral gray */
+    border-color: #6b7280;
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: #4b5563;
+    border-color: #4b5563;
+}
+.btn-danger {
+    background-color: #ef4444; /* A clear red for danger */
+    border-color: #ef4444;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Alert Styles */
+.alert-success {
+    background-color: #22c55e;
+    color: white;
+    border: none;
+}
+.alert-danger {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+}
+.alert-warning {
+    background-color: #f59e0b;
+    color: var(--dark-bg);
+    border: none;
+}
