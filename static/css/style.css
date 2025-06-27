@@ -227,24 +227,32 @@ a.list-group-item:hover { background-color: #4b5563; }
 
 /* --- Additions to style.css for missing button/alert styles --- */
 
-/* Button Styles */
+/* Button Styles - V2 for better visibility and interaction */
+.btn {
+    cursor: pointer; /* Ensure all button-like elements show a pointer */
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+}
+.btn:hover {
+    opacity: 0.85;
+}
 .btn-secondary {
     background-color: #6b7280; /* A neutral gray */
     border-color: #6b7280;
-    color: white;
-}
-.btn-secondary:hover {
-    background-color: #4b5563;
-    border-color: #4b5563;
+    color: white !important; /* Use !important to override any conflicting styles */
 }
 .btn-danger {
     background-color: #ef4444; /* A clear red for danger */
     border-color: #ef4444;
-    color: white;
+    color: white !important;
 }
-.btn-danger:hover {
-    background-color: #dc2626;
-    border-color: #dc2626;
+.logout-btn { /* Specific style for the logout button */
+    background-color: var(--primary-indigo) !important;
+    border-color: var(--primary-indigo) !important;
+    color: white !important;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    text-align: center;
 }
 
 /* Alert Styles */
